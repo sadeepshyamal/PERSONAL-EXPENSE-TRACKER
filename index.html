@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f6f2">
+  <meta name="description" content="A simple personal finance dashboard to track income and expenses.">
+  <title>Personal Expense Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Personal Expense Tracker home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>Personal Expense Tracker</span>
+    </a>
+    <span class="storage-note"><span class="storage-dot" aria-hidden="true"></span>Saved on this device</span>
+  </header>
+
+  <main class="page-shell" id="top">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">YOUR FINANCES</p>
+        <h1 id="page-title">Your money, in focus.</h1>
+        <p class="intro-copy">A clear view of what comes in and what goes out.</p>
+      </div>
+      <div class="intro-aside" aria-hidden="true">
+        <span class="aside-rule"></span>
+        <span>PERSONAL<br>LEDGER</span>
+      </div>
+    </section>
+
+    <section class="summary-grid" aria-label="Financial summary">
+      <article class="summary-card income-card">
+        <div class="summary-topline">
+          <span class="summary-label">Total income</span>
+          <span class="summary-icon income-icon" aria-hidden="true">+</span>
+        </div>
+        <p class="summary-value" id="total-income">LKR 0.00</p>
+        <p class="summary-footnote">Money received</p>
+      </article>
+      <article class="summary-card expense-card">
+        <div class="summary-topline">
+          <span class="summary-label">Total expenses</span>
+          <span class="summary-icon expense-icon" aria-hidden="true">-</span>
+        </div>
+        <p class="summary-value" id="total-expenses">LKR 0.00</p>
+        <p class="summary-footnote">Money spent</p>
+      </article>
+      <article class="summary-card balance-card">
+        <div class="summary-topline">
+          <span class="summary-label">Current balance</span>
+          <span class="summary-icon balance-icon" aria-hidden="true">=</span>
+        </div>
+        <p class="summary-value" id="current-balance">LKR 0.00</p>
+        <p class="summary-footnote">Income minus expenses</p>
+      </article>
+    </section>
+
+    <section class="panel add-panel" aria-labelledby="add-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">KEEP YOUR LEDGER UP TO DATE</p>
+          <h2 id="add-heading">Add a transaction</h2>
+        </div>
+        <span class="section-index" aria-hidden="true">01</span>
+      </div>
+
+      <form id="transaction-form" novalidate>
+        <div class="form-grid">
+          <div class="field field-type">
+            <label for="transaction-type">Transaction type</label>
+            <select id="transaction-type" name="type" required>
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+          <div class="field field-description">
+            <label for="description">Description</label>
+            <input id="description" name="description" type="text" placeholder="e.g. Monthly allowance" maxlength="100" required>
+          </div>
+          <div class="field field-amount">
+            <label for="amount">Amount <span class="label-unit">(LKR)</span></label>
+            <input id="amount" name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="field field-category">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option value="" disabled selected>Select category</option>
+              <option>Allowance</option>
+              <option>Salary</option>
+              <option>Food</option>
+              <option>Transport</option>
+              <option>Education</option>
+              <option>Entertainment</option>
+              <option>Shopping</option>
+              <option>Bills</option>
+              <option>Healthcare</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field field-date">
+            <label for="date">Transaction date</label>
+            <input id="date" name="date" type="date" required>
+          </div>
+          <div class="form-actions">
+            <button class="button button-primary" type="submit"><span aria-hidden="true">+</span> Add transaction</button>
+            <button class="button button-secondary" id="clear-form" type="button">Clear form</button>
+          </div>
+        </div>
+        <p class="form-message" id="form-message" role="alert" aria-live="assertive" hidden></p>
+      </form>
+    </section>
+
+    <section class="panel history-panel" aria-labelledby="history-heading">
+      <div class="section-heading history-heading">
+        <div>
+          <p class="eyebrow">YOUR ACTIVITY</p>
+          <h2 id="history-heading">Transaction history</h2>
+        </div>
+        <span class="section-index" aria-hidden="true">02</span>
+      </div>
+
+      <div class="history-toolbar">
+        <div class="field filter-field">
+          <label for="type-filter">Show</label>
+          <select id="type-filter" name="filter">
+            <option value="all">All transactions</option>
+            <option value="income">Income only</option>
+            <option value="expense">Expenses only</option>
+          </select>
+        </div>
+        <div class="field search-field">
+          <label for="search">Search transactions</label>
+          <div class="search-control">
+            <span class="search-icon" aria-hidden="true"></span>
+            <input id="search" name="search" type="search" placeholder="Description or category" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <p class="sr-only" id="results-summary" aria-live="polite"></p>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">Transaction history, sorted by newest date first</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Description</th>
+              <th scope="col">Type</th>
+              <th scope="col">Category</th>
+              <th scope="col" class="amount-heading">Amount (LKR)</th>
+              <th scope="col" class="action-heading"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody id="transaction-list"></tbody>
+        </table>
+      </div>
+      <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <footer class="page-footer">
+      <span>PERSONAL EXPENSE TRACKER</span>
+      <span>Your data stays in this browser.</span>
+    </footer>
+  </main>
+    <div class="success-toast" id="success-toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <span class="success-toast-icon" aria-hidden="true">&#10003;</span>
+      <span>New transaction added!</span>
+    </div>
+</body>
+</html>
